@@ -1,0 +1,125 @@
+version: "3.1"
+services:
+    db-cloudera:
+        container_name: mobydq-test-db-cloudera
+        image: mobydq-test-db-cloudera
+        restart: always
+        build:
+            context: ./test/db-cloudera/
+            dockerfile: Dockerfile
+        expose:
+            - 10000
+        networks:
+            - network
+        hostname: quickstart.cloudera
+        privileged: true
+        tty: true
+
+    db-hortonworks:
+        container_name: mobydq-test-db-hortonworks
+        image: mobydq-test-db-hortonworks
+        restart: always
+        build:
+            context: ./test/db-hortonworks/
+            dockerfile: Dockerfile
+        expose:
+            - 10000
+        networks:
+            - network
+        hostname: sandbox-hdf.hortonworks.com
+        privileged: true
+        tty: true
+
+    db-mariadb:
+        container_name: mobydq-test-db-mariadb
+        image: mobydq-test-db-mariadb
+        restart: always
+        build:
+            context: ./test/db-mariadb/
+            dockerfile: Dockerfile
+        environment:
+            MYSQL_ROOT_PASSWORD: "1234"
+        expose:
+            - 3306
+        networks:
+            - network
+
+    db-mysql:
+        container_name: mobydq-test-db-mysql
+        image: mobydq-test-db-mysql
+        restart: always
+        build:
+            context: ./test/db-mysql/
+            dockerfile: Dockerfile
+        environment:
+            MYSQL_ROOT_PASSWORD: "1234"
+        expose:
+            - 3306
+        networks:
+            - network
+
+    db-oracle:
+        container_name: mobydq-test-db-oracle
+        image: mobydq-test-db-oracle
+        restart: always
+        build:
+            context: ./test/db-oracle/
+            dockerfile: Dockerfile
+        environment:
+            ORACLE_PWD: "1234-abcd"
+        expose:
+            - 1521
+        networks:
+            - network
+
+    db-postgresql:
+        container_name: mobydq-test-db-postgresql
+        image: mobydq-test-db-postgresql
+        restart: always
+        build:
+            context: ./test/db-postgresql/
+            dockerfile: Dockerfile
+        environment:
+            POSTGRES_USER: "postgres"
+            POSTGRES_PASSWORD: "1234"
+            POSTGRES_DATABASE: "star_wars"
+        expose:
+            - 5432
+        networks:
+            - network
+
+    db-sql-server:
+        container_name: mobydq-test-db-sql-server
+        image: mobydq-test-db-sql-server
+        restart: always
+        build:
+            context: ./test/db-sql-server/
+            dockerfile: Dockerfile
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "1234-abcd"
+        expose:
+            - 1433
+        networks:
+            - network
+
+    test-scripts:
+        container_name: mobydq-test-scripts
+        image: mobydq-test-scripts
+        build:
+            context: .
+            dockerfile: ./test/Dockerfile
+        command: ["./run-tests.sh", "${TEST_CASE}", "${TEST_HOST}", "${TEST_PORT}"]
+        depends_on:
+          - db
+          - graphql
+        networks:
+          - network
+
+    test-lint-python:
+        container_name: mobydq-test-lint-python
+        image: mobydq-test-lint-python
+        build:
+            context: .
+            dockerfile: ./test/Dockerfile
+        command: ["pylint", "scripts", "test"]

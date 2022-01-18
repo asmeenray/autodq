@@ -1,0 +1,84 @@
+version: "3.1"
+services:
+    db:
+        container_name: mobydq-db
+        restart: always
+        image: mobydq-db
+        build:
+            context: ./db
+        volumes:
+            - db:/var/lib/postgresql/data
+        env_file:
+            - ./.env
+        networks:
+            - network
+
+    graphql:
+        container_name: mobydq-graphql
+        restart: always
+        image: mobydq-graphql
+        build:
+            context: ./graphql
+        volumes:
+            - //var/run/docker.sock:/var/run/docker.sock
+        env_file:
+            - ./.env
+        depends_on:
+            - db
+        networks:
+            - network
+
+    app:
+        container_name: mobydq-app
+        restart: always
+        image: mobydq-app
+        build:
+            context: ./app
+        env_file:
+            - ./.env
+        depends_on:
+            - graphql
+        networks:
+            - network
+        command: ["prod"]
+
+    nginx:
+        container_name: mobydq-nginx
+        restart: always
+        image: nginx:alpine
+        volumes:
+            - ./nginx/config/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/config/cert.pem:/etc/nginx/cert.pem
+            - ./nginx/config/key.pem:/etc/nginx/key.pem
+        ports:
+            - 80:80
+            - 443:443
+        depends_on:
+            - graphql
+        networks:
+            - network
+
+    scripts:
+        container_name: mobydq-scripts
+        restart: always
+        image: mobydq-scripts
+        build:
+            context: ./scripts
+            args:
+                - MAIL_HOST=${MAIL_HOST}
+                - MAIL_PORT=${MAIL_PORT}
+                - MAIL_SENDER=${MAIL_SENDER}
+                - MAIL_PASSWORD=${MAIL_PASSWORD}
+                - MAIL_BASE_URL=${MAIL_BASE_URL}
+        env_file:
+            - ./.env
+        depends_on:
+            - graphql
+        networks:
+            - network
+
+networks:
+    network:
+
+volumes:
+    db:
