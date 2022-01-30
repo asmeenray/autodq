@@ -1,9 +1,9 @@
 version: "3.1"
 services:
     db:
-        container_name: mobydq-db
+        container_name: autodq-db
         restart: always
-        image: mobydq-db
+        image: autodq-db
         build:
             context: ./db
         volumes:
@@ -14,9 +14,9 @@ services:
             - network
 
     graphql:
-        container_name: mobydq-graphql
+        container_name: autodq-graphql
         restart: always
-        image: mobydq-graphql
+        image: autodq-graphql
         build:
             context: ./graphql
         volumes:
@@ -29,9 +29,9 @@ services:
             - network
 
     app:
-        container_name: mobydq-app
+        container_name: autodq-app
         restart: always
-        image: mobydq-app
+        image: autodq-app
         build:
             context: ./app
         env_file:
@@ -43,7 +43,7 @@ services:
         command: ["prod"]
 
     nginx:
-        container_name: mobydq-nginx
+        container_name: autodq-nginx
         restart: always
         image: nginx:alpine
         volumes:
@@ -59,9 +59,9 @@ services:
             - network
 
     scripts:
-        container_name: mobydq-scripts
+        container_name: autodq-scripts
         restart: always
-        image: mobydq-scripts
+        image: autodq-scripts
         build:
             context: ./scripts
             args:
