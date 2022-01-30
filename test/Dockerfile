@@ -1,4 +1,4 @@
-FROM mobydq-scripts:latest
+FROM autodq-scripts:latest
 
 WORKDIR /srv
 RUN mkdir -p /srv/test
