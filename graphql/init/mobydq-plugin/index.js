@@ -21,10 +21,10 @@ const runTestDataSourceContainer = () => {
 
             // Run Docker container
             docker.run(
-                "mobydq-scripts",
+                "autodq-scripts",
                 ["python", "run.py", authorization, "test_data_source", dataSourceId.toString()],
                 process.stdout,
-                { name: "mobydq-test-data-source-" + dataSourceId, HostConfig: { AutoRemove: true, NetworkMode: "mobydq_network" } }, // Start options
+                { name: "autodq-test-data-source-" + dataSourceId, HostConfig: { AutoRemove: true, NetworkMode: "autodq_network" } }, // Start options
                 function(err, data, container) {
                     // Do nothing
                 }
@@ -56,10 +56,10 @@ const runExecuteBatchContainer = () => {
 
             // Run Docker container
             docker.run(
-                "mobydq-scripts",
+                "autodq-scripts",
                 ["python", "run.py", authorization, "execute_batch", batchId.toString()],
                 process.stdout,
-                { name: "mobydq-batch-" + batchId, HostConfig: { AutoRemove: true, NetworkMode: "mobydq_network" } },
+                { name: "autodq-batch-" + batchId, HostConfig: { AutoRemove: true, NetworkMode: "autodq_network" } },
                 function(err, data, container) {
                     // Do nothing
                 }
@@ -104,8 +104,8 @@ const killContainer = (containerName, objectId) => {
 module.exports = makeWrapResolversPlugin({
     Mutation: {
         testDataSource: runTestDataSourceContainer(),
-        killTestDataSource: killContainer("mobydq-test-data-source-", "dataSourceId"),
+        killTestDataSource: killContainer("autodq-test-data-source-", "dataSourceId"),
         executeBatch: runExecuteBatchContainer(),
-        killExecuteBatch: killContainer("mobydq-batch-", "batchId")
+        killExecuteBatch: killContainer("autodq-batch-", "batchId")
     }
 });
