@@ -29,8 +29,8 @@ RUN apt-get install -y tdsodbc
 RUN dpkg -i ./drivers/hive-odbc-native_2.6.1.1001-2_amd64.deb
 
 # Install MySQL ODBC driver
-RUN mkdir /usr/lib/x86_64-linux-gnu/
-RUN mkdir /usr/lib/x86_64-linux-gnu/odbc/
+# RUN mkdir /usr/lib/x86_64-linux-gnu/
+# RUN mkdir /usr/lib/x86_64-linux-gnu/odbc/
 RUN tar xvzf ./drivers/mysql-connector-odbc-8.0.12-linux-debian9-x86-64bit.tar.gz \
     && cp ./mysql-connector-odbc-8.0.12-linux-debian9-x86-64bit/lib/libmyodbc8* /usr/lib/x86_64-linux-gnu/odbc/ \
     && rm -R ./mysql-connector-odbc-8.0.12-linux-debian9-x86-64bit
